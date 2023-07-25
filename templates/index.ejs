@@ -32,7 +32,7 @@
       </form>
       <div id="todos">
         <% for (const todo of todos) { %>
-          <%- include('todo', { todo: todo }) %>
+          <%- include('todo', { todo: todo, swap: false }) %>
         <% } %>
       </div>
       <div id="edit-modal"></div>

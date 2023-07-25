@@ -1,11 +1,11 @@
-<div style="display:flex" id='todo-<%= todo.id %>'>
+<div style="display:flex" id='todo-<%= todo.id %>' <%- swap ? 'hx-swap-oob="true"' : '' %>>
   <span style="margin-right:16px"><%= todo.description %></span>
   <button 
     style="width:auto;padding:4px"
     hx-post="/todo/update/modal"
     hx-target='#edit-modal'
     hx-swap="innerHTML"
-    hx-vals='<%= { "todo": JSON.stringify(todo) } %>''
+    hx-vals='{ "todo": <%= JSON.stringify(todo) %> }'
     >
     Edit
   </button>

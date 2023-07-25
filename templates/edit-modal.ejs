@@ -1,10 +1,18 @@
 <dialog open id='edit-todo-<%= todo.id %>'>
   <article>
     <h3>Edit todo</h3>
-    <input value='<%= todo.description %>'
+    <!-- <input value='<%= todo.description %>'> -->
+    <input id='edit-todo-field' value='<%= todo.description %>'>
     <footer>
-      <a href="#cancel" role="button" class="secondary">Cancel</a>
-      <a href="#confirm" role="button">Confirm</a>
+      <a href="javascript:void(0)" role="button" class="secondary" onclick="document.querySelector('#edit-todo-<%= todo.id %>').remove()">Cancel</a>
+      <a href="javascript:void(0)" role="button" 
+        hx-post="/todo/update" 
+        hx-vals="js:{ id: <%= todo.id %>, description: document.querySelector('#edit-todo-field').value }"
+        hx-swap="delete"
+        hx-target='#edit-todo-<%= todo.id %>'
+        >
+        Confirm
+      </a>
     </footer>
   </article>
 </dialog>

@@ -18,7 +18,7 @@ const createTodoHandler = (request, h) => {
   const newTodo = { id, description: request.payload.todo }
   todos.unshift(newTodo)
   id++
-  return Ejs.renderFile(path.resolve(__dirname, './templates/todo.ejs'), { todo: newTodo })
+  return Ejs.renderFile(path.resolve(__dirname, './templates/todo.ejs'), { todo: newTodo, swap: false })
 }
 
 const deleteTodoHandler = (request, h) => {
@@ -28,15 +28,17 @@ const deleteTodoHandler = (request, h) => {
 }
 
 const updateTodoModal = (request, h) => {
-  const todo = request.payload.todo
-  return Ejs.renderFile(path.resolve(__dirname, './templates/edit-modal.ejs'), { todo })
+  const todo = JSON.parse(request.payload.todo)
+  return Ejs.renderFile(path.resolve(__dirname, './templates/edit-modal.ejs'), { todo, swap: false})
 } 
 
 const updateTodoHandler = (request, h) => {
-  const updatedTodo = request.payload.todo
-  todos.unshift(newTodo)
-  id++
-  return Ejs.renderFile(path.resolve(__dirname, './templates/todo.ejs'), { todo: newTodo })
+  const updatedTodoRaw = request.payload
+  const updatedTodo = { id: parseInt(updatedTodoRaw.id), description: updatedTodoRaw.description }
+  const todoToUpdate = todos.findIndex(todo => todo.id === updatedTodo.id)
+  todos[todoToUpdate] = updatedTodo
+
+  return Ejs.renderFile(path.resolve(__dirname, './templates/todo.ejs'), { todo: updatedTodo, swap: true })
 }
 
 const init = async () => {
@@ -49,6 +51,7 @@ const init = async () => {
   server.route({ method: 'GET', path: '/', handler: rootHandler });
   server.route({ method: 'POST', path: '/todo/create', handler: createTodoHandler });
   server.route({ method: 'POST', path: '/todo/delete', handler: deleteTodoHandler });
+  server.route({ method: 'POST', path: '/todo/update', handler: updateTodoHandler });
   server.route({ method: 'POST', path: '/todo/update/modal', handler: updateTodoModal });
   await server.start();
   console.log('Server running at:', server.info.uri);
