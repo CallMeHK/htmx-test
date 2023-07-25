@@ -1,10 +1,12 @@
 const Ejs = require('ejs');
 const Hapi = require('@hapi/hapi');
 const Vision = require('@hapi/vision');
+const path = require('path')
 
 const server = Hapi.Server({ port: 3000 });
 
-const todos = []
+let todos = [ { id: 1, description: 'hello' }, { id: 2,  description: 'world' }, { id: 3,  description: '!!!!!!' } ]
+let id = 4
 
 const rootHandler = (request, h) => {
   return h.view('index', {
@@ -12,10 +14,17 @@ const rootHandler = (request, h) => {
   });
 };
 
-const submitTodoHandler = (request, h) => {
-  const newTodo = request.payload.todo
+const createTodoHandler = (request, h) => {
+  const newTodo = { id, description: request.payload.todo }
   todos.unshift(newTodo)
-  return `<div>${newTodo}</div>`
+  id++
+  return Ejs.renderFile(path.resolve(__dirname, './templates/todo.ejs'), { todo: newTodo })
+}
+
+const deleteTodoHandler = (request, h) => {
+  const todoId = parseInt(request.payload.id)
+  todos = todos.filter(({id}) => id !== todoId)
+  return `<div></div>`
 }
 
 const init = async () => {
@@ -26,7 +35,9 @@ const init = async () => {
     path: 'templates'
   });
   server.route({ method: 'GET', path: '/', handler: rootHandler });
-  server.route({ method: 'POST', path: '/todo/submit', handler: submitTodoHandler });
+  server.route({ method: 'POST', path: '/todo/create', handler: createTodoHandler });
+  server.route({ method: 'POST', path: '/todo/delete', handler: deleteTodoHandler });
+  server.route({ method: 'POST', path: '/todo/update', handler: () => {} });
   await server.start();
   console.log('Server running at:', server.info.uri);
 };

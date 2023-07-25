@@ -1,0 +1,12 @@
+<div style="display:flex" id='todo-<%= todo.id %>'>
+  <span style="margin-right:16px"><%= todo.description %></span>
+  <button 
+    style="width:auto;padding:4px"
+    hx-post="/todo/delete"
+    hx-target='#todo-<%= todo.id %>'
+    hx-swap="outerHTML"
+    hx-vals='{ "id": <%= todo.id %> }''
+    >
+    Delete
+  </button>
+</div>

@@ -21,8 +21,7 @@
 
   <body>
     <main>
-      <!--  _="on htmx:afterOnLoad set #txtTodo.value to ''"> -->
-      <form hx-post="/todo/submit" hx-target="#todos" hx-swap="afterbegin" hx-trigger="submit">
+      <form hx-post="/todo/create" hx-target="#todos" hx-swap="afterbegin" hx-trigger="submit">
         <input 
           type="text" 
           name="todo"
@@ -33,7 +32,7 @@
       </form>
       <div id="todos">
         <% for (const todo of todos) { %>
-          <div><%= todo %></div>
+          <%- include('todo', { todo: todo }) %>
         <% } %>
       </div>
     </main>
