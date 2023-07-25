@@ -3,13 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Classless example • Pico.css</title>
+    <title>Todos</title>
     <meta
       name="description"
-      content="Just a pure semantic HTML markup, without .classes.  Built with Pico CSS."
+      content="Some todo app"
     />
     <link rel="shortcut icon" href="https://picocss.com/favicon.ico" />
     <link rel="canonical" href="https://picocss.com/examples/classless/" />
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
 
     <!-- Pico.css (Classless version) -->
     <link
@@ -20,8 +21,29 @@
 
   <body>
     <main>
-      <%= message %>
+      <!--  _="on htmx:afterOnLoad set #txtTodo.value to ''"> -->
+      <form hx-post="/todo/submit" hx-target="#todos" hx-swap="afterbegin" hx-trigger="submit">
+        <input 
+          type="text" 
+          name="todo"
+          id="txtTodo"
+          autofocus=""
+          placeholder="Add a todo"
+        >
+      </form>
+      <div id="todos">
+        <% for (const todo of todos) { %>
+          <div><%= todo %></div>
+        <% } %>
+      </div>
     </main>
   </body>
+  <script>
+    htmx.on('htmx:afterSwap', function(event) {
+      if(event.detail.elt.id === "todos") {
+        document.getElementById("txtTodo").value = ""
+      }
+    });
+  </script>
 </html>
 
